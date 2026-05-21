@@ -15,14 +15,17 @@ jobs:
     - name: Enabling Remote Access
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+        VM_PASSWORD: ${{ secrets.VM_PASSWORD }}
       run: |
           chmod +x mac/start.sh
-          bash mac/start.sh "$NGROK_AUTH_TOKEN"
+          bash mac/start.sh "$NGROK_AUTH_TOKEN" "$VM_PASSWORD"
           
     - name: Log In Details To VNC Server
+      env:
+        VM_PASSWORD: ${{ secrets.VM_PASSWORD }}
       run: |
          chmod +x mac/login.sh
-         bash mac/login.sh
+         bash mac/login.sh "$VM_PASSWORD"
          
     - name: MacOS System running...
       uses: mxschmitt/action-tmate@v3

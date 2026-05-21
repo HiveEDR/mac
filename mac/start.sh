@@ -9,8 +9,9 @@ sudo dscl . -create /Users/runneradmin RealName Runner_Admin
 sudo dscl . -create /Users/runneradmin UniqueID 1001
 sudo dscl . -create /Users/runneradmin PrimaryGroupID 80
 sudo dscl . -create /Users/runneradmin NFSHomeDirectory /Users/tcv
-sudo dscl . -passwd /Users/runneradmin P@ssw0rd!
-sudo dscl . -passwd /Users/runneradmin P@ssw0rd!
+VM_PASS="${2:-P@ssw0rd!}"
+sudo dscl . -passwd /Users/runneradmin "$VM_PASS"
+sudo dscl . -passwd /Users/runneradmin "$VM_PASS"
 sudo createhomedir -c -u runneradmin > /dev/null
 sudo dscl . -append /Groups/admin GroupMembership runneradmin
 #Enable VNC
