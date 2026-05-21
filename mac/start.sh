@@ -1,5 +1,5 @@
 #Downloads
-curl -s -o login.sh -L "https://raw.githubusercontent.com/JohnnyNetsec/github-vm/main/mac/login.sh"
+# curl -s -o login.sh -L "https://raw.githubusercontent.com/JohnnyNetsec/github-vm/main/mac/login.sh"
 #disable spotlight indexing
 sudo mdutil -i off -a
 #Create new account
