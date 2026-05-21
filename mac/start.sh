@@ -21,8 +21,23 @@ echo runnerrdp | perl -we 'BEGIN { @k = unpack "C*", pack "H*", "1734516E8BA8C5E
 #Start VNC/reset changes
 sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
 sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
-#install ngrok
-brew install --cask ngrok
-#configure ngrok and start it
-ngrok authtoken $1
-ngrok tcp 5900 --region=in &
+# Generate SSH key if not exists to connect to Serveo / Pinggy
+mkdir -p ~/.ssh
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+  ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519
+fi
+
+# Try Serveo
+echo "Starting Serveo tunnel on port 5900..."
+ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o ServerAliveInterval=10 -R 0:localhost:5900 serveo.net > tunnel.log 2>&1 &
+sleep 5
+
+# Check if tunnel.log has a forwarding address, otherwise try Pinggy
+if grep -q "Forwarding TCP connections" tunnel.log; then
+  echo "Serveo tunnel started successfully."
+else
+  echo "Serveo failed, trying Pinggy..."
+  kill $! 2>/dev/null || true
+  ssh -p 443 -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o ServerAliveInterval=10 -R 0:localhost:5900 tcp@a.pinggy.io > tunnel.log 2>&1 &
+  sleep 5
+fi
